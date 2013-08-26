@@ -91,6 +91,7 @@ class SimpleXLSX {
 		
 		$rows = array();
 		$curR = 0;
+		$lastColumn = 0;
 
 		foreach ($ws->sheetData->row as $r=>$row) {
 
@@ -98,7 +99,17 @@ class SimpleXLSX {
 
 				list($curC,) = $this->_columnIndex((string) $c['r']);
 
+				if ($curC > ($lastColumn+1)) {
+
+					// An increment has been found
+					for ($i=($lastColumn+1); $i<$curC; $i++) {
+						$rows[ $curR ][ $i ] = null;
+					}
+				}
+
 				$rows[ $curR ][ $curC ] = $this->value($c);
+
+				$lastColumn = $curC;
 			}
 			
 			$curR++;
